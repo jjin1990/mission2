@@ -106,6 +106,7 @@ def show_menu():
     print("=" * 40)
 
 quizzes = create_default_quizzes()
+best_score = None
 
 while True:
     show_menu()
@@ -115,13 +116,19 @@ while True:
         print("\n프로그램을 종료합니다")
         break
     if choice == "1":
-        play_quiz(quizzes)
+        score = play_quiz(quizzes)
+        if best_score is None or score > best_score:
+            best_score = score
+            print("🎉 새로운 최고 점수입니다!")
     elif choice == "2":
         add_quiz(quizzes)
     elif choice == "3":
         show_quiz_list(quizzes)
     elif choice == "4":
-        print("점수 확인 (준비 중)")
+        if best_score is None:
+            print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
+        else:
+            print("🏆 최고 점수: " + str(best_score) + "문제 정답")
     elif choice == "5":
         print("프로그램을 종료합니다.")
         break
