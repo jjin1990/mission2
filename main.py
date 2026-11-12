@@ -81,6 +81,18 @@ def add_quiz(quizzes):
     answer = get_number("정답 번호 (1-4): ", 1, 4)
     quizzes.append(Quiz(question, choices, answer))
     print("✅ 퀴즈가 추가되었습니다!")
+
+def show_quiz_list(quizzes):
+    if len(quizzes) == 0:
+        print("⚠️ 등록된 퀴즈가 없습니다.")
+        return
+    print("📋 등록된 퀴즈 목록 (총 " + str(len(quizzes)) + "개)")
+    print("-" * 40)
+    number = 1
+    for quiz in quizzes:
+        print("[" + str(number) + "] " + quiz.question)
+        number = number + 1
+    print("-" * 40)
     
 def show_menu():
     print("=" * 40)
@@ -107,7 +119,7 @@ while True:
     elif choice == "2":
         add_quiz(quizzes)
     elif choice == "3":
-        print("퀴즈 목록 (준비 중)")
+        show_quiz_list(quizzes)
     elif choice == "4":
         print("점수 확인 (준비 중)")
     elif choice == "5":
