@@ -47,90 +47,100 @@ def get_text(prompt):
             continue
         return text
 
-def play_quiz(quizzes):
-    if len(quizzes) == 0:
-        print("⚠️ 등록된 퀴즈가 없습니다.")
-        return 0
-    print("📝 퀴즈를 시작합니다! (총 " + str(len(quizzes)) + "문제)")
-    score = 0
-    number = 1
-    for quiz in quizzes:
+class QuizGame:
+    def __init__(self):
+        self.quizzes = create_default_quizzes()
+        self.best_score = None
+
+    def play_quiz(self):
+        if len(self.quizzes) == 0:
+            print("⚠️ 등록된 퀴즈가 없습니다.")
+            return 0
+        print("📝 퀴즈를 시작합니다! (총 " + str(len(self.quizzes)) + "문제)")
+        score = 0
+        number = 1
+        for quiz in self.quizzes:
+            print("-" * 40)
+            print("[문제 " + str(number) + "]")
+            quiz.display()
+            user_answer = get_number("정답 입력: ", 1, 4)
+            if quiz.check_answer(user_answer):
+                print("✅ 정답입니다!")
+                score = score + 1
+            else:
+                print("❌ 오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
+            number = number + 1
+        print("=" * 40)
+        print("🏆 결과: " + str(len(self.quizzes)) + "문제 중 " + str(score) + "문제 정답!")
+        return score
+
+    def add_quiz(self):
+        print("📌 새로운 퀴즈를 추가합니다.")
+        question = get_text("문제를 입력하세요: ")
+        choices = []
+        number = 1
+        while number <= 4:
+            choice = get_text("선택지 " + str(number) + ": ")
+            choices.append(choice)
+            number = number + 1
+        answer = get_number("정답 번호 (1-4): ", 1, 4)
+        self.quizzes.append(Quiz(question, choices, answer))
+        print("✅ 퀴즈가 추가되었습니다!")
+
+    def show_quiz_list(self):
+        if len(self.quizzes) == 0:
+            print("⚠️ 등록된 퀴즈가 없습니다.")
+            return
+        print("📋 등록된 퀴즈 목록 (총 " + str(len(self.quizzes)) + "개)")
         print("-" * 40)
-        print("[문제 " + str(number) + "]")
-        quiz.display()
-        user_answer = get_number("정답 입력: ", 1, 4)
-        if quiz.check_answer(user_answer):
-            print("✅ 정답입니다!")
-            score = score + 1
-        else:
-            print("❌ 오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
-        number = number + 1
-    print("=" * 40)
-    print("🏆 결과: " + str(len(quizzes)) + "문제 중 " + str(score) + "문제 정답!")
-    return score
+        number = 1
+        for quiz in self.quizzes:
+            print("[" + str(number) + "] " + quiz.question)
+            number = number + 1
+        print("-" * 40)
+        
+    def show_menu(self):
+        print("=" * 40)
+        print("       🎯 개발 작업실 기초 퀴즈 🎯")
+        print("=" * 40)
+        print("1. 퀴즈 풀기")
+        print("2. 퀴즈 추가")
+        print("3. 퀴즈 목록")
+        print("4. 점수 확인")
+        print("5. 종료")
+        print("=" * 40)
 
-def add_quiz(quizzes):
-    print("📌 새로운 퀴즈를 추가합니다.")
-    question = get_text("문제를 입력하세요: ")
-    choices = []
-    number = 1
-    while number <= 4:
-        choice = get_text("선택지 " + str(number) + ": ")
-        choices.append(choice)
-        number = number + 1
-    answer = get_number("정답 번호 (1-4): ", 1, 4)
-    quizzes.append(Quiz(question, choices, answer))
-    print("✅ 퀴즈가 추가되었습니다!")
-
-def show_quiz_list(quizzes):
-    if len(quizzes) == 0:
-        print("⚠️ 등록된 퀴즈가 없습니다.")
-        return
-    print("📋 등록된 퀴즈 목록 (총 " + str(len(quizzes)) + "개)")
-    print("-" * 40)
-    number = 1
-    for quiz in quizzes:
-        print("[" + str(number) + "] " + quiz.question)
-        number = number + 1
-    print("-" * 40)
-    
-def show_menu():
-    print("=" * 40)
-    print("       🎯 개발 작업실 기초 퀴즈 🎯")
-    print("=" * 40)
-    print("1. 퀴즈 풀기")
-    print("2. 퀴즈 추가")
-    print("3. 퀴즈 목록")
-    print("4. 점수 확인")
-    print("5. 종료")
-    print("=" * 40)
-
-quizzes = create_default_quizzes()
-best_score = None
-
-while True:
-    show_menu()
-    try:
-        choice = input("선택: ").strip()
-    except (KeyboardInterrupt, EOFError):
-        print("\n프로그램을 종료합니다")
-        break
-    if choice == "1":
-        score = play_quiz(quizzes)
-        if best_score is None or score > best_score:
-            best_score = score
-            print("🎉 새로운 최고 점수입니다!")
-    elif choice == "2":
-        add_quiz(quizzes)
-    elif choice == "3":
-        show_quiz_list(quizzes)
-    elif choice == "4":
-        if best_score is None:
+    def show_score(self):
+        if self.best_score is None:
             print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
         else:
-            print("🏆 최고 점수: " + str(best_score) + "문제 정답")
-    elif choice == "5":
-        print("프로그램을 종료합니다.")
-        break
-    else:
-        print("⚠️ 잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요")
+            print("🏆 최고 점수: " + str(self.best_score) + "문제 정답")
+
+    def run(self):
+        while True:
+            self.show_menu()
+            try:
+                choice = input("선택: ").strip()
+            except (KeyboardInterrupt, EOFError):
+                print("\n프로그램을 종료합니다")
+                break
+            if choice == "1":
+                score = self.play_quiz()
+                if self.best_score is None or score > self.best_score:
+                    self.best_score = score
+                    print("🎉 새로운 최고 점수입니다!")
+            elif choice == "2":
+                self.add_quiz()
+            elif choice == "3":
+                self.show_quiz_list()
+            elif choice == "4":
+                self.show_score()
+            elif choice == "5":
+                print("프로그램을 종료합니다.")
+                break
+            else:
+                print("⚠️ 잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요")
+
+
+game = QuizGame()
+game.run()
