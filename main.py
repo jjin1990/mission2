@@ -1,4 +1,4 @@
-while True:
+def show_menu():
     print("=" * 40)
     print("       🎯 개발 작업실 기초 퀴즈 🎯")
     print("=" * 40)
@@ -8,6 +8,10 @@ while True:
     print("4. 점수 확인")
     print("5. 종료")
     print("=" * 40)
+
+
+while True:
+    show_menu()
     choice = input("선택: ").strip()
     if choice == "1":
         print("퀴즈 풀기 (준비 중)")
