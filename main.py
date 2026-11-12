@@ -22,7 +22,45 @@ def create_default_quizzes():
         Quiz("컨테이너를 삭제해도 데이터를 남기는 방법은?", ["docker stop", "볼륨 연결", "docker ps", "이미지 다시 빌드"], 2),
     ]
     return quizzes
+def get_number(prompt, min_num, max_num):
+    while True:
+        text = input(prompt).strip()
+        if text == "":
+            print("⚠️ 입력이 비어 있어요. 숫자를 입력하세요.")
+            continue
+        try:
+            number = int(text)
+        except ValueError:
+            print("⚠️ 숫자를 입력하세요.")
+            continue
+        if number < min_num or number > max_num:
+            print("⚠️ " + str(min_num) + "-" + str(max_num) + " 사이의 숫자를 입력하세요.")
+            continue
+        return number
 
+def play_quiz(quizzes):
+    if len(quizzes) == 0:
+        print("⚠️ 등록된 퀴즈가 없습니다.")
+        return 0
+    print("📝 퀴즈를 시작합니다! (총 " + str(len(quizzes)) + "문제)")
+    score = 0
+    number = 1
+    for quiz in quizzes:
+        print("-" * 40)
+        print("[문제 " + str(number) + "]")
+        quiz.display()
+        user_answer = get_number("정답 입력: ", 1, 4)
+        if quiz.check_answer(user_answer):
+            print("✅ 정답입니다!")
+            score = score + 1
+        else:
+            print("❌ 오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
+        number = number + 1
+    print("=" * 40)
+    print("🏆 결과: " + str(len(quizzes)) + "문제 중 " + str(score) + "문제 정답!")
+    return score
+
+    
 def show_menu():
     print("=" * 40)
     print("       🎯 개발 작업실 기초 퀴즈 🎯")
@@ -44,7 +82,7 @@ while True:
         print("\n프로그램을 종료합니다")
         break
     if choice == "1":
-        print("퀴즈 풀기 (준비 중)")
+        play_quiz(quizzes)
     elif choice == "2":
         print("퀴즈 추가 (준비 중)")
     elif choice == "3":
