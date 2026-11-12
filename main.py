@@ -12,7 +12,11 @@ def show_menu():
 
 while True:
     show_menu()
-    choice = input("선택: ").strip()
+    try:
+        choice = input("선택: ").strip()
+    except (KeyboardInterrupt, EOFError):
+        print("\n프로그램을 종료합니다")
+        break
     if choice == "1":
         print("퀴즈 풀기 (준비 중)")
     elif choice == "2":
