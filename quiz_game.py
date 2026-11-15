@@ -1,4 +1,5 @@
 import json
+import random
 from quiz import Quiz
 from quiz_data import create_default_quizzes
 
@@ -40,7 +41,8 @@ class QuizGame:
         print("📝 퀴즈를 시작합니다! (총 " + str(len(self.quizzes)) + "문제)")
         score = 0
         number = 1
-        for quiz in self.quizzes:
+        quizzes = random.sample(self.quizzes, len(self.quizzes))        
+        for quiz in quizzes:
             print("-" * 40)
             print("[문제 " + str(number) + "]")
             quiz.display()
