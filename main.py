@@ -1,20 +1,6 @@
 import json
+from quiz import Quiz
 
-class Quiz:
-    def __init__(self, question, choices, answer):
-        self.question = question
-        self.choices = choices
-        self.answer = answer
-
-    def display(self):
-        print(self.question)
-        number = 1
-        for choice in self.choices:
-            print(str(number) + ". " + choice)
-            number = number + 1
-
-    def check_answer(self, user_answer):
-        return user_answer == self.answer
 def create_default_quizzes():
     quizzes = [
         Quiz("지금 내가 있는 폴더의 경로를 보여 주는 명령은?", ["ls", "cd", "pwd", "mkdir"], 3),
