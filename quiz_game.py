@@ -1,5 +1,6 @@
 import json
 import random
+from datetime import datetime
 from quiz import Quiz
 from quiz_data import create_default_quizzes
 
@@ -32,6 +33,7 @@ class QuizGame:
         self.file_path = "state.json"
         self.quizzes = []
         self.best_score = None
+        self.history = []
         self.load()
 
     def play_quiz(self):
@@ -56,6 +58,11 @@ class QuizGame:
             number = number + 1
         print("=" * 40)
         print("🏆 결과: " + str(count) + "문제 중 " + str(score) + "문제 정답!")
+        self.history.append({
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "count": count,
+            "score": score,
+        })
         return score
 
     def add_quiz(self):
@@ -113,6 +120,15 @@ class QuizGame:
             print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
         else:
             print("🏆 최고 점수: " + str(self.best_score) + "문제 정답")
+        if len(self.history) == 0:
+            return
+        print("📜 게임 기록 (총 " + str(len(self.history)) + "회)")
+        print("-" * 40)
+        number = 1
+        for record in self.history:
+            print("[" + str(number) + "] " + record["date"] + " | " + str(record["count"]) + "문제 중 " + str(record["score"]) + "문제 정답")
+            number = number + 1
+        print("-" * 40)
 
     def load(self):
         try:
@@ -122,18 +138,21 @@ class QuizGame:
             for item in data["quizzes"]:
                 self.quizzes.append(Quiz(item["question"], item["choices"], item["answer"]))
             self.best_score = data["best_score"]
+            self.history = data.get("history", [])
             print("📂 저장된 데이터를 불러왔습니다. (퀴즈 " + str(len(self.quizzes)) + "개)")
         except FileNotFoundError:
             self.quizzes = create_default_quizzes()
             self.best_score = None
+            self.history = []
             print("📂 저장 파일이 없어 기본 퀴즈로 시작합니다.")
         except (json.JSONDecodeError, KeyError, TypeError):
             self.quizzes = create_default_quizzes()
             self.best_score = None
+            self.history = []
             print("⚠️ 저장 파일이 손상되어 기본 퀴즈로 복구합니다.")
 
     def save(self):
-        data = {"quizzes": [], "best_score": self.best_score}
+        data = {"quizzes": [], "best_score": self.best_score, "history": self.history}
         for quiz in self.quizzes:
             data["quizzes"].append({
                 "question": quiz.question,
@@ -160,7 +179,7 @@ class QuizGame:
                 if self.best_score is None or score > self.best_score:
                     self.best_score = score
                     print("🎉 새로운 최고 점수입니다!")
-                    self.save()
+                self.save()
             elif choice == "2":
                 self.add_quiz()
                 self.save()
