@@ -38,10 +38,11 @@ class QuizGame:
         if len(self.quizzes) == 0:
             print("⚠️ 등록된 퀴즈가 없습니다.")
             return 0
-        print("📝 퀴즈를 시작합니다! (총 " + str(len(self.quizzes)) + "문제)")
+        count = get_number("풀 문제 수를 입력하세요 (1-" + str(len(self.quizzes)) + "): ", 1, len(self.quizzes))
+        print("📝 퀴즈를 시작합니다! (총 " + str(count) + "문제)")
         score = 0
         number = 1
-        quizzes = random.sample(self.quizzes, len(self.quizzes))        
+        quizzes = random.sample(self.quizzes, count)        
         for quiz in quizzes:
             print("-" * 40)
             print("[문제 " + str(number) + "]")
@@ -54,7 +55,7 @@ class QuizGame:
                 print("❌ 오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
             number = number + 1
         print("=" * 40)
-        print("🏆 결과: " + str(len(self.quizzes)) + "문제 중 " + str(score) + "문제 정답!")
+        print("🏆 결과: " + str(count) + "문제 중 " + str(score) + "문제 정답!")
         return score
 
     def add_quiz(self):
