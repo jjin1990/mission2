@@ -82,7 +82,20 @@ class QuizGame:
             print("[" + str(number) + "] " + quiz.question)
             number = number + 1
         print("-" * 40)
-        
+
+    def delete_quiz(self):
+        if len(self.quizzes) == 0:
+            print("⚠️ 삭제할 퀴즈가 없습니다.")
+            return
+        self.show_quiz_list()
+        number = get_number("삭제할 퀴즈 번호 (1-" + str(len(self.quizzes)) + "): ", 1, len(self.quizzes))
+        confirm = get_text("정말 삭제할까요? (y/n): ")
+        if confirm != "y":
+            print("삭제를 취소했습니다.")
+            return
+        removed = self.quizzes.pop(number - 1)
+        print("🗑️ 삭제되었습니다: " + removed.question)
+
     def show_menu(self):
         print("=" * 40)
         print("       🎯 개발 작업실 기초 퀴즈 🎯")
@@ -91,7 +104,8 @@ class QuizGame:
         print("2. 퀴즈 추가")
         print("3. 퀴즈 목록")
         print("4. 점수 확인")
-        print("5. 종료")
+        print("5. 퀴즈 삭제")
+        print("6. 종료")
         print("=" * 40)
 
     def show_score(self):
@@ -155,8 +169,11 @@ class QuizGame:
             elif choice == "4":
                 self.show_score()
             elif choice == "5":
+                self.delete_quiz()
+                self.save()
+            elif choice == "6":
                 print("프로그램을 종료합니다.")
                 self.save()
                 break
             else:
-                print("⚠️ 잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요")
+                print("⚠️ 잘못된 입력입니다. 1-6 사이의 숫자를 입력하세요")
