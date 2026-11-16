@@ -49,15 +49,27 @@ class QuizGame:
             print("-" * 40)
             print("[문제 " + str(number) + "]")
             quiz.display()
-            user_answer = get_number("정답 입력: ", 1, 4)
+            used_hint = False
+            user_answer = get_number("정답 입력 (힌트: 0): ", 0, 4)
+            if user_answer == 0:
+                if quiz.hint == "":
+                    print("💡 이 문제는 힌트가 없습니다.")
+                else:
+                    print("💡 힌트: " + quiz.hint)
+                    used_hint = True
+                user_answer = get_number("정답 입력: ", 1, 4)
             if quiz.check_answer(user_answer):
-                print("✅ 정답입니다!")
-                score = score + 1
+                if used_hint:
+                    print("✅ 정답입니다! (힌트 사용: 0.5점)")
+                    score = score + 0.5
+                else:
+                    print("✅ 정답입니다!")
+                    score = score + 1
             else:
                 print("❌ 오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
             number = number + 1
         print("=" * 40)
-        print("🏆 결과: " + str(count) + "문제 중 " + str(score) + "문제 정답!")
+        print("🏆 결과: " + str(count) + "문제 중 " + str(score) + "점!")
         self.history.append({
             "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
             "count": count,
@@ -75,7 +87,8 @@ class QuizGame:
             choices.append(choice)
             number = number + 1
         answer = get_number("정답 번호 (1-4): ", 1, 4)
-        self.quizzes.append(Quiz(question, choices, answer))
+        hint = get_text("힌트를 입력하세요: ")
+        self.quizzes.append(Quiz(question, choices, answer, hint))
         print("✅ 퀴즈가 추가되었습니다!")
 
     def show_quiz_list(self):
@@ -119,14 +132,14 @@ class QuizGame:
         if self.best_score is None:
             print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
         else:
-            print("🏆 최고 점수: " + str(self.best_score) + "문제 정답")
+            print("🏆 최고 점수: " + str(self.best_score) + "점")
         if len(self.history) == 0:
             return
         print("📜 게임 기록 (총 " + str(len(self.history)) + "회)")
         print("-" * 40)
         number = 1
         for record in self.history:
-            print("[" + str(number) + "] " + record["date"] + " | " + str(record["count"]) + "문제 중 " + str(record["score"]) + "문제 정답")
+            print("[" + str(number) + "] " + record["date"] + " | " + str(record["count"]) + "문제 중 " + str(record["score"]) + "점")
             number = number + 1
         print("-" * 40)
 
@@ -136,7 +149,7 @@ class QuizGame:
                 data = json.load(f)
             self.quizzes = []
             for item in data["quizzes"]:
-                self.quizzes.append(Quiz(item["question"], item["choices"], item["answer"]))
+                self.quizzes.append(Quiz(item["question"], item["choices"], item["answer"], item.get("hint", "")))
             self.best_score = data["best_score"]
             self.history = data.get("history", [])
             print("📂 저장된 데이터를 불러왔습니다. (퀴즈 " + str(len(self.quizzes)) + "개)")
@@ -158,6 +171,7 @@ class QuizGame:
                 "question": quiz.question,
                 "choices": quiz.choices,
                 "answer": quiz.answer,
+                "hint": quiz.hint,
             })
         try:
             with open(self.file_path, "w", encoding="utf-8") as f:
