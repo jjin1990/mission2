@@ -130,7 +130,7 @@ class QuizGame:
 
     def show_score(self):
         if self.best_score is None:
-            print("⚠️ 아직 퀴즈를 풀지 않았습니다.")
+            print("⚠️ 아직 최고 점수가 없습니다.")
         else:
             print("🏆 최고 점수: " + str(self.best_score) + "점")
         if len(self.history) == 0:
@@ -190,7 +190,7 @@ class QuizGame:
                 break
             if choice == "1":
                 score = self.play_quiz()
-                if self.best_score is None or score > self.best_score:
+                if score > 0 and (self.best_score is None or score > self.best_score):
                     self.best_score = score
                     print("🎉 새로운 최고 점수입니다!")
                 self.save()
