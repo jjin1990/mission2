@@ -54,6 +54,17 @@ Python으로 만든 터미널 퀴즈 게임입니다. 메뉴에서 번호를 골
 기본 퀴즈 5개는 `quiz_data.py`에 있고, 문제마다 힌트도 하나씩 들어 있습니다. 퀴즈는 게임 안에서 직접 추가할 수도 있습니다.
 
 ## 3. 실행 환경
+| 항목 | 내용 |
+| --- | --- |
+| 운영체제 | Windows + WSL (Ubuntu) |
+| 편집기 | VS Code 1.146.0 (WSL 연결) |
+| Python | 3.14.4 (미션 요구: 3.10 이상) |
+| Git | 2.53.0 (사용자 이름: jjin1990) |
+| 외부 라이브러리 | 없음 |
+
+![개발 환경](evidence/dev-environment.png)
+
+*VS Code를 WSL(Ubuntu)에 연결한 화면. 터미널에서 Python, Git, VS Code 버전과 Git 사용자 이름을 확인했고, 아래 상태 표시줄에 WSL: Ubuntu와 Python 3.14.4가 보입니다.*
 
 ## 4. 실행 방법
 
