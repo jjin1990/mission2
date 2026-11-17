@@ -874,3 +874,13 @@ $ git diff --stat
 **미션 3에서도 가져갈 습관:** 커밋 전에 `git status`와 `git diff --stat` 확인하기, 고치기 전과 후를 같은 조건에서 비교하기, 결과가 안 보이는 명령 뒤에는 증거 명령 붙이기.
 
 ## 16. 제출 정보
+
+| 제출물 | 위치 |
+|------|------|
+| GitHub 저장소 URL | https://github.com/jjin1990/mission2 (Public, `main` 브랜치) |
+| 개발 환경 설정 스크린샷 (VS Code, Python 버전, Git 설정) | [3. 실행 환경](#3-실행-환경) — `evidence/dev-environment.png` |
+| 실행 결과 스크린샷 (퀴즈 추가, 목록, 풀기, 점수 확인) | [6. 실행 화면](#6-실행-화면) — `run-add`, `run-list-after-add`, `run-play`, `run-score` 외 |
+| `git log --oneline --graph` 스크린샷 | [10. Git 작업 기록](#10-git-작업-기록) — `evidence/git-log-graph-final.png` |
+
+- 사진은 모두 `evidence/` 폴더에 있습니다.
+- README 작성까지 마친 뒤 `docs/readme` 브랜치를 `main`에 병합하고 push했습니다. 위 그래프 사진은 그 마지막 상태에서 찍었습니다.
