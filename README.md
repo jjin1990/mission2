@@ -649,9 +649,6 @@ except (KeyboardInterrupt, EOFError):         # 어디서든 Ctrl+C·Ctrl+D가 �
 **테스트 중 실수: Ctrl+D 대신 Ctrl+Z**
 Ctrl+D를 누르려다 Ctrl+Z를 눌렀더니 `[1]+ Stopped python3 main.py`가 나왔습니다. 꺼진 게 아니라 **일시정지되어 뒤로 보내진 상태**였습니다. `jobs`로 멈춘 프로그램을 확인하고, `fg`로 다시 앞으로 불러온 뒤 Ctrl+D로 종료했습니다. 다시 `jobs`를 쳤을 때 아무것도 나오지 않는 것으로 정리된 걸 확인했습니다.
 
-![Ctrl+Z 일시정지와 fg](evidence/ctrl-z-stopped-fg.png)
-*Ctrl+Z = 일시정지(Stopped) → jobs로 확인 → fg로 불러와 Ctrl+D로 종료*
-
 | 키 | 뜻 |
 |---|---|
 | Ctrl+C | 지금 하는 일을 멈춤 (KeyboardInterrupt) |
