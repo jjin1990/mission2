@@ -385,6 +385,96 @@ grep -n "^import\|^from\|^class\|def " *.py
 
 ## 10. Git 작업 기록
 
+### 작업 방식
+
+처음 기본 설정과 메뉴·Quiz 클래스는 `main`에서 바로 커밋했고, 퀴즈 풀기부터는 **기능 하나 = 브랜치 하나**로 작업했습니다.
+
+1. `git checkout -b 브랜치이름` 으로 작업 브랜치를 만들고 이동
+2. 코드를 고치고 실행해서 테스트
+3. `git status` → `git add 파일이름` → `git commit -m "타입: 내용"`
+4. `git checkout main` → `git merge --no-ff 브랜치이름 -m "Merge: …"` → `git push`
+
+- `git add .` 대신 **파일 이름을 하나씩 지정**해서, 연습 파일이나 저장 파일이 실수로 들어가지 않게 했습니다.
+- `--no-ff`로 병합 커밋을 따로 남겨서, 그래프에서 어느 작업이 어느 브랜치에서 이루어졌는지 갈래 모양으로 보이게 했습니다.
+- 커밋하기 전에 `git diff --stat`으로 의도한 만큼만 바뀌었는지 확인했습니다.
+
+### 커밋이 많은 이유
+
+미션 요구는 커밋 10개 이상이지만, 기본 미션을 한 번 끝까지 실습한 뒤에 파일을 나누고 보너스 과제와 버그 수정까지 하다 보니 커밋이 많아졌습니다. 기능이나 구역 하나를 끝낼 때마다 커밋하고, 브랜치 작업은 병합 커밋을 따로 남겼기 때문입니다.
+
+| 단계 | 내용 | 커밋 수 |
+| --- | --- | --- |
+| 1. 기본 미션 | 초기 설정 ~ 저장·불러오기, 첫 브랜치(퀴즈 풀기), clone 실습 | 14 |
+| 2. 파일 나누기 | Refactor 3 + Merge 1 | 4 |
+| 3. 보너스 과제 5개 | 기능마다 Feat 1 + Merge 1 | 10 |
+| 4. 버그 수정 2개 | 버그마다 Fix 1 + Merge 1 | 4 |
+| 5. README 작성 | 구역마다 Docs 1 + 마지막 Merge | (최종 숫자는 마지막에 기록) |
+
+구역마다 커밋해 둔 덕분에, README를 쓰다가 실수로 지운 부분도 커밋과 비교해서(`git diff`) 바로 찾아 되살릴 수 있었습니다.
+
+### 브랜치 목록
+
+| 브랜치 | 작업 | 작업 커밋 | 병합 커밋 |
+| --- | --- | --- | --- |
+| `feature/play-quiz` | 퀴즈 풀기 | `7d73c9e` | `97220f3` |
+| `refactor/split-files` | 파일 4개로 나누기 | `f32b278`, `10322d2`, `3b83fbf` | `549204b` |
+| `feature/random-quiz` | 보너스 1. 랜덤 출제 | `ac284aa` | `cc2edcc` |
+| `feature/quiz-count` | 보너스 2. 문제 수 선택 | `bdc1297` | `204e98c` |
+| `feature/delete-quiz` | 보너스 4. 퀴즈 삭제 | `9c067f4` | `2c78518` |
+| `feature/score-history` | 보너스 5. 점수 기록 히스토리 | `8af1ead` | `412957b` |
+| `feature/hint` | 보너스 3. 힌트 | `af99ee0` | `2c434f4` |
+| `fix/zero-best-score` | 0점 최고 점수 버그 수정 | `69c16ff` | `63de74b` |
+| `fix/ctrl-c-anywhere` | 도중 Ctrl+C 버그 수정 | `bb4f7a7` | `8ff19b3` |
+| `docs/readme` | README 작성 | 구역마다 커밋 | (마지막에 병합) |
+
+브랜치 이름은 하는 일에 따라 `feature/`(기능), `refactor/`(구조 정리), `fix/`(버그 수정), `docs/`(문서)로 나누었습니다.
+
+### 커밋 메시지 규칙
+
+| 타입 | 뜻 | 예 |
+| --- | --- | --- |
+| `Feat` | 기능 추가 | Feat: 퀴즈 삭제 기능 (번호 선택·확인 질문, …) |
+| `Fix` | 버그 수정 | Fix: 0점이면 최고 점수로 기록하지 않음, … |
+| `Refactor` | 동작은 그대로, 구조만 정리 | Refactor: Quiz 클래스를 quiz.py로 분리 |
+| `Docs` | 문서 | Docs: README 8. 데이터 파일 설명 작성 … |
+| `Chore` | 설정 | Chore: 초기 설정 - .gitignore, README 목차 뼈대 추가 |
+| `Merge` | 브랜치 병합 | Merge: 힌트 기능 브랜치 병합 |
+
+### Git 명령 7종 사용
+
+| 명령 | 처음 쓴 때 | 한 일 |
+| --- | --- | --- |
+| `init` | 11/11 | `mission2` 폴더를 Git 저장소로 시작 |
+| `add` | 11/11 | 커밋할 파일 지정 (`.gitignore`, `README.md`) |
+| `commit` | 11/11 | 첫 커밋 `e21b263` Chore: 초기 설정 |
+| `push` | 11/11 | GitHub에 처음 올림 (`git push -u origin main`, SSH) |
+| `checkout` | 11/12 | `git checkout -b feature/play-quiz`로 첫 브랜치 생성, `git checkout main`으로 돌아오기 |
+| `clone` | 11/12 | 저장소를 `mission2-clone` 폴더에 복제 |
+| `pull` | 11/12 | 복제본에서 올린 커밋을 원래 폴더로 가져옴 |
+
+### clone · pull 실습
+
+1. `git clone`으로 GitHub 저장소를 `~/codyssey/mission2-clone`에 복제했습니다. (다른 컴퓨터에서 받는 상황 흉내)
+2. 복제본에서 README에 한 줄을 추가하고 커밋 `437a70e` "Docs: clone 실습 - 복제 저장소에서 README 한 줄 추가" → `git push`
+3. 원래 폴더 `~/codyssey/mission2`에서 `git pull` → Fast-forward로 그 커밋이 들어온 것을 확인했습니다.
+4. 복제본에는 연습 파일과 `state.json`이 없었습니다. **GitHub에 push한 것만 복제된다**는 것을 확인했습니다.
+
+(그때 추가한 한 줄은 README를 지금 구조로 다시 짜면서 지웠고, 커밋 `437a70e`에 기록으로 남아 있습니다.)
+
+![복제본의 reflog](evidence/clone-reflog.png)
+
+*복제본 폴더에서 `git reflog`로 확인한 기록. `clone: from github.com:jjin1990/mission2.git`(복제) → `commit: Docs: clone 실습 …`(복제본에서 커밋) 순서가 남아 있고, `origin/main`이 그 커밋에 있어 push까지 된 것을 알 수 있습니다.*
+
+![원래 폴더에서 pull](evidence/pull.png)
+
+*원래 폴더에서 `git pull`로 복제본에서 올린 커밋을 받아 온 화면.*
+
+### 커밋 그래프
+
+![git log --oneline --graph](evidence/git-log-graph-final.png)
+
+*README를 병합한 뒤의 최종 `git log --oneline --graph`. (마지막 단계에서 찍어서 넣을 예정)*
+
 ## 11. 수행 체크리스트
 
 ## 12. 개발 과정
