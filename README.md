@@ -473,7 +473,7 @@ grep -n "^import\|^from\|^class\|def " *.py
 
 ![git log --oneline --graph](evidence/git-log-graph-final.png)
 
-*README를 병합한 뒤의 최종 `git log --oneline --graph`. (마지막 단계에서 찍어서 넣을 예정)*
+*README를 병합하고 push한 뒤의 최종 `git log --oneline --graph`. 맨 위 `0c62942`에 `HEAD -> main, origin/main`이 함께 보여 push까지 끝난 상태임을 확인할 수 있습니다. 기능·버그 수정·README 브랜치 10개가 갈라졌다 합쳐진 모양이 남아 있습니다.*
 
 ## 11. 수행 체크리스트
 
