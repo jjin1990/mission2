@@ -183,6 +183,82 @@ python3 main.py                                      # 게임 실행
 
 ## 7. 파일 구조와 클래스 설계
 
+### 파일 구조
+
+```
+mission2/
+├── main.py          # 시작점: QuizGame을 만들고 실행 (Ctrl+C·Ctrl+D 안전 종료)
+├── quiz.py          # Quiz 클래스 (문제 한 장)
+├── quiz_data.py     # 기본 퀴즈 5개를 만드는 함수
+├── quiz_game.py     # QuizGame 클래스 + 입력 함수(get_number, get_text)
+├── state.json       # 저장 파일 (실행하면 생김, Git에는 올리지 않음)
+├── .gitignore       # __pycache__/, *.pyc, .vscode/, state.json 제외
+├── README.md
+└── evidence/        # README에 넣은 사진
+```
+
+### 파일끼리 연결 (import)
+
+```
+main.py ──▶ quiz_game.py ──▶ quiz.py
+                  │
+                  └────────▶ quiz_data.py ──▶ quiz.py
+```
+
+- `main.py`: `from quiz_game import QuizGame` (게임을 만들고 실행만 함)
+- `quiz_game.py`: `json`, `random`, `datetime`(표준 라이브러리) + `Quiz`, `create_default_quizzes`
+- `quiz_data.py`: `from quiz import Quiz` (기본 퀴즈를 Quiz로 만들기 때문)
+- 파일마다 **자기가 쓰는 것만** import합니다.
+
+### 구조를 직접 확인한 방법
+
+파일을 하나씩 열지 않고, 터미널에서 import 줄과 클래스·함수 줄만 모아서 확인했습니다.
+
+```bash
+grep -n "^import\|^from\|^class\|def " *.py
+```
+
+- `grep`: 파일에서 원하는 글자가 있는 줄만 찾아 줌
+- `-n`: 찾은 줄의 **줄 번호**도 같이 보여 줌
+- `"^import\|^from\|^class\|def "`: `^`는 **줄의 맨 앞**, `\|`는 **또는**. 줄 맨 앞이 `import`·`from`·`class`이거나, `def `가 들어 있는 줄
+- `*.py`: 이 폴더의 **모든 파이썬 파일**에서 찾기
+
+![코드 구조 확인](evidence/code-structure-grep.png)
+
+*파일마다 무엇을 import하는지, 클래스와 함수가 몇 번 줄에 있는지 한 번에 보입니다. quiz_game.py에는 함수 2개(get_number, get_text)와 QuizGame 메서드 10개가 있습니다.*
+
+### 클래스와 함수
+
+| 이름 | 위치 | 하는 일 |
+| --- | --- | --- |
+| `Quiz` | quiz.py | 문제 한 장. 속성 `question`, `choices`(4개), `answer`(1~4), `hint` |
+| `Quiz.display()` | quiz.py | 문제와 선택지에 번호를 붙여 출력 |
+| `Quiz.check_answer(user_answer)` | quiz.py | 정답이면 `True`, 아니면 `False`를 돌려줌 |
+| `create_default_quizzes()` | quiz_data.py | 기본 퀴즈 5개(힌트 포함) 목록을 돌려줌 |
+| `get_number(prompt, min_num, max_num)` | quiz_game.py | 범위 안의 숫자가 들어올 때까지 다시 묻는 입력 함수 |
+| `get_text(prompt)` | quiz_game.py | 빈칸이 아닌 글자가 들어올 때까지 다시 묻는 입력 함수 |
+| `QuizGame` | quiz_game.py | 게임 전체 관리. 속성 `file_path`, `quizzes`, `best_score`, `history` |
+
+| `QuizGame` 메서드 | 하는 일 |
+| --- | --- |
+| `play_quiz()` | 문제 수 선택 → 섞어서 출제 → 채점(힌트 0.5점) → 기록 추가 → 점수를 돌려줌 |
+| `add_quiz()` | 문제·선택지·정답·힌트를 받아 추가 |
+| `show_quiz_list()` | 퀴즈 목록 출력 |
+| `delete_quiz()` | 번호 선택 + 확인 후 삭제 |
+| `show_menu()` | 메뉴 6개 출력 |
+| `show_score()` | 최고 점수와 게임 기록 출력 |
+| `load()` | `state.json`을 읽어 퀴즈·최고 점수·기록을 불러옴 |
+| `save()` | 퀴즈·최고 점수·기록을 `state.json`에 저장 |
+| `run()` | 메뉴를 반복해서 보여 주고, 번호에 맞는 메서드를 불러 줌 |
+
+### 왜 이렇게 나눴나
+
+- 처음에는 `main.py` 한 파일로 기본 기능을 완성했고, 보너스 과제를 시작하기 전에 `refactor/split-files` 브랜치에서 파일 4개로 나누었습니다. 코드가 더 커지기 전에 나눠야 옮기기 쉽다고 생각했습니다.
+- **파일마다 맡은 일이 하나**라서 고칠 곳이 분명합니다. 실제로 힌트 기능은 `quiz.py`와 `quiz_data.py`, 삭제·기록 기능은 `quiz_game.py`, 도중 Ctrl+C 버그는 `main.py`만 고쳤습니다.
+- 기본 퀴즈는 **데이터**라서 `quiz_data.py`로 따로 두었습니다. 문제 내용만 바꿀 때 이 파일만 열면 됩니다.
+- `get_number`, `get_text`는 게임 정보(`self`)가 필요 없는 **공용 입력 도구**라서 클래스 밖에 두고, 퀴즈 풀기·추가·삭제에서 같이 씁니다.
+- 나누는 동안 한 단계마다 실행해 보고 커밋해서(Refactor 커밋 3개), 어느 커밋에서도 프로그램이 동작하게 했습니다. 나눈 뒤에도 동작은 그대로인지 메뉴를 전부 다시 테스트했습니다.
+
 ## 8. 데이터 파일 설명 (state.json)
 
 ## 9. 예외 처리 설계
