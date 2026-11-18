@@ -948,3 +948,4 @@ $ git diff --stat
 
 - 사진은 모두 `evidence/` 폴더에 있습니다.
 - README 작성까지 마친 뒤 `docs/readme` 브랜치를 `main`에 병합하고 push했습니다. 위 그래프 사진은 그 마지막 상태에서 찍었습니다.
+감사합니다.
